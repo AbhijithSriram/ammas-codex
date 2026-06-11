@@ -1,0 +1,7 @@
+# Amma's Codex - sync server deps.
+# A plain REST replica (no websockets, no accounts). One shared bearer token.
+Flask==3.0.3
+Flask-SQLAlchemy==3.1.1
+python-dotenv==1.0.1
+gevent==24.2.1            # async worker friendly on Python 3.13/3.14
+gunicorn==22.0.0          # prod: gunicorn -k gevent wsgi:app

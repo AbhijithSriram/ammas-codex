@@ -1,0 +1,57 @@
+/* Design tokens - "Warm clay & oat", ported verbatim from the Claude Design prototype
+   (prototype/amma-s-codex/project/amma.css). Two themes, switched by [data-theme] on <html>.
+   Keep these names stable; component CSS and Tailwind both read them. */
+
+[data-theme='light'] {
+  --screen-bg: #f5ede1;
+  --surface: #fffcf6;
+  --surface-2: #faf2e6;
+  --surface-3: #f1e6d5;
+  --ink: #2a231c;
+  --ink-soft: #6e5f50;
+  --ink-faint: #a2917d;
+  --line: #e6d9c7;
+  --line-soft: #efe5d6;
+  --thread: #d8c6ad;
+  --clay: #be5e37;
+  --clay-deep: #a54b28;
+  --clay-tint: #f0d2bf;
+  --clay-wash: #f7e7da;
+  --sage: #7e8e5e;
+  --sage-tint: #e2e6d2;
+  --turmeric: #d79a2e;
+  --bead: #ffffff;
+  --on-clay: #fff7f0;
+  --shadow: rgba(74, 48, 24, 0.13);
+  --shadow-lg: rgba(74, 48, 24, 0.18);
+  --photo-a: #e7c9a6;
+  --photo-b: #c99a6b;
+  color-scheme: light;
+}
+
+[data-theme='dark'] {
+  --screen-bg: #191410;
+  --surface: #251d16;
+  --surface-2: #2e251c;
+  --surface-3: #382c20;
+  --ink: #f3e9d9;
+  --ink-soft: #c2b09a;
+  --ink-faint: #8c7b66;
+  --line: #3a2e23;
+  --line-soft: #2e251c;
+  --thread: #4d3f31;
+  --clay: #d67c50;
+  --clay-deep: #bc6238;
+  --clay-tint: #5c3a26;
+  --clay-wash: #33251b;
+  --sage: #9cac78;
+  --sage-tint: #34361f;
+  --turmeric: #e2ac4e;
+  --bead: #2e251c;
+  --on-clay: #20140c;
+  --shadow: rgba(0, 0, 0, 0.45);
+  --shadow-lg: rgba(0, 0, 0, 0.55);
+  --photo-a: #6e5436;
+  --photo-b: #4a381f;
+  color-scheme: dark;
+}
