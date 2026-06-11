@@ -11,7 +11,7 @@ Phone PWA (IndexedDB + OPFS, source of truth)
 Cloudflare Tunnel  ──►  ammas-codex.abhijith-sriram.in
    │
    ▼
-Old laptop:  gunicorn -k gevent -w 1 wsgi:app  --bind 127.0.0.1:5055
+Old laptop:  waitress-serve --listen=127.0.0.1:5055 wsgi:app
    ├─ Flask        REST: /api/sync/push, /api/sync/pull, /api/media/<id>, /api/health
    ├─ SQLite (WAL) generic `records` table (entity, id, updated_at, deleted, payload JSON)
    └─ ./media/     immutable media bytes on local disk
@@ -27,8 +27,9 @@ Old laptop:  gunicorn -k gevent -w 1 wsgi:app  --bind 127.0.0.1:5055
 - **Last-write-wins by `updated_at`.** Effectively single-author, so a lexicographic compare of
   fixed-format UTC ISO timestamps is the whole conflict policy. Media is immutable once captured,
   so bytes never conflict - only metadata.
-- **gevent, one worker.** Plenty for two users; no shared in-process state, so you *could* run
-  more workers, but `-w 1` is simplest with SQLite.
+- **Threaded WSGI (waitress), one process.** There are no websockets here, so no async worker is
+  needed; a single threaded process handles the occasional push/upload and keeps SQLite writes
+  simple. It's pure-Python, so it installs on any Python (incl. 3.14) with no compiler.
 
 ## API
 | Method | Path | Purpose |
@@ -54,10 +55,13 @@ python wsgi.py                                             # dev: http://127.0.0
 
 ### Production (on the laptop, behind the tunnel)
 ```bash
-gunicorn -k gevent -w 1 wsgi:app --bind 127.0.0.1:5055
+waitress-serve --listen=127.0.0.1:5055 wsgi:app
 # expose it - route ammas-codex.abhijith-sriram.in → http://127.0.0.1:5055
 cloudflared tunnel run
 ```
+(Prefer gunicorn? `pip install gunicorn` and run `gunicorn -k gthread -w 1 --threads 4
+wsgi:app --bind 127.0.0.1:5055` - still no async worker, no compiler. Waitress is the default
+here only because it's pure-Python and the smoothest on a brand-new Python like 3.14.)
 A `cloudflared` config typically looks like:
 ```yaml
 # ~/.cloudflared/config.yml
@@ -68,7 +72,7 @@ ingress:
     service: http://127.0.0.1:5055
   - service: http_status:404
 ```
-Keep gunicorn bound to localhost; Cloudflare terminates TLS. Set the same `SYNC_TOKEN`
+Keep the server bound to localhost; Cloudflare terminates TLS. Set the same `SYNC_TOKEN`
 in the app's Settings as in this server's `.env`.
 
 ### Backups

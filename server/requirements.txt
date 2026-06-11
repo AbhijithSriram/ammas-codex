@@ -1,7 +1,8 @@
 # Amma's Codex - sync server deps.
 # A plain REST replica (no websockets, no accounts). One shared bearer token.
+# Everything here is pure-Python, so it installs cleanly on any Python (incl. 3.14)
+# with no C compiler and no build step.
 Flask==3.0.3
 Flask-SQLAlchemy==3.1.1
 python-dotenv==1.0.1
-gevent==24.2.1            # async worker friendly on Python 3.13/3.14
-gunicorn==22.0.0          # prod: gunicorn -k gevent wsgi:app
+waitress>=3.0.1          # threaded WSGI server for prod (no async worker needed here)

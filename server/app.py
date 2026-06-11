@@ -8,7 +8,7 @@ Bootstrap once:
 Run (dev):
     python wsgi.py
 Run (prod, behind the Cloudflare tunnel - see README):
-    gunicorn -k gevent -w 1 wsgi:app --bind 127.0.0.1:5055
+    waitress-serve --listen=127.0.0.1:5055 wsgi:app
 """
 import click
 from flask import Flask
