@@ -30,7 +30,9 @@ def _sqlite_pragmas(dbapi_con, _):
 def create_app(config=Config):
     import os
 
-    app = Flask(__name__)
+    dist_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'dist'))
+    app = Flask(__name__, static_folder=dist_dir, static_url_path="/")
+
     app.config.from_object(config)
     os.makedirs(app.config["MEDIA_DIR"], exist_ok=True)
 
@@ -55,6 +57,16 @@ def create_app(config=Config):
 
     from sync_routes import sync_bp
     app.register_blueprint(sync_bp)
+
+    @app.route("/", defaults={"path": ""})
+    @app.route("/<path:path>")
+    def catch_all(path):
+        if path.startswith("api/"):
+            return "Not Found", 404
+        if path != "" and os.path.exists(os.path.join(dist_dir, path)):
+            return app.send_static_file(path)
+        else:
+            return app.send_static_file("index.html")
 
     @app.cli.command("init-db")
     def init_db():

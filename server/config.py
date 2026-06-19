@@ -13,6 +13,12 @@ class Config:
     MEDIA_DIR = os.path.abspath(os.environ.get("MEDIA_DIR", "./media"))
     MAX_CONTENT_LENGTH = int(os.environ.get("MAX_UPLOAD_MB", "200")) * 1024 * 1024
 
+    # The built PWA (Vite `npm run build` output). Served at "/" so one origin gives both the
+    # installable app and its sync API. Defaults to the repo's dist/ next to this server folder.
+    FRONTEND_DIR = os.path.abspath(
+        os.environ.get("FRONTEND_DIR", os.path.join(os.path.dirname(__file__), "..", "dist"))
+    )
+
     # The single shared secret the phone (and the reviewer device) present as a
     # bearer token. The app has no accounts by design; this guards the public
     # tunnel endpoint. Generate one: python -c "import secrets;print(secrets.token_hex(32))"
